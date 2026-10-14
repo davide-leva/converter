@@ -51,17 +51,17 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # Tag set is intentionally explicit: `latest` only moves on a semver
-      # tag push, never on a branch push. `flavor: latest=disabled` turns
-      # off the default `latest=auto` rule (which would otherwise add
-      # `latest` on pushes to the default branch). The `enable=is_default_tag`
-      # value is a literal recognised by docker/metadata-action — NOT a
-      # Handlebars expression; do not wrap it in `{{...}}`.
+      # tag push, never on a branch push. `flavor: latest=false` turns off
+      # the default `latest=auto` rule (which would otherwise add `latest`
+      # on pushes to the default branch). The `enable=is_default_tag` value
+      # is a literal recognised by docker/metadata-action — NOT a Handlebars
+      # expression; do not wrap it in `{{...}}`.
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          flavor: latest=disabled
+          flavor: latest=false
           tags: |
             type=ref,event=branch
             type=ref,event=pr
