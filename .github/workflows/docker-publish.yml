@@ -1,20 +1,9 @@
-name: docker-publish
 
-# Build the container image and publish it to GHCR.
-#
-# - Pull request: build only, do not push (uses pr-<n> ephemeral tags).
-# - Push to master: tag the image as `master` and `sha-<short>`. The `latest`
-#   tag is intentionally not updated on branch pushes: releases are signalled
-#   by an explicit `vX.Y.Z` tag, matching the project's manual-release model.
-# - Push of a `vX.Y.Z` tag: tag the image as `X.Y.Z`, `X.Y`, `X`, `latest`
-#   and `sha-<short>` so consumers can pin to major, minor or full semver.
+name: docker-publish
 
 on:
   push:
     branches: [master]
-    # GitHub Actions filter patterns are globs, not regex. `v*.*.*` requires a
-    # `v` prefix and three dot-separated segments; the metadata-action then
-    # only emits semver tags when the input actually parses as `vX.Y.Z`.
     tags: ['v*.*.*']
   pull_request:
     branches: [master]
@@ -24,20 +13,24 @@ env:
   IMAGE_NAME: ${{ github.repository_owner }}/converter
 
 jobs:
+  verify:
+    name: Verify version
+    uses: ./.github/workflows/version-check.yml
+    permissions:
+      contents: read
+
   build:
     name: Build and publish image
+    needs: verify
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
       packages: write
-      attestations: write
-      id-token: write
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -50,12 +43,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Tag set is intentionally explicit: `latest` only moves on a semver
-      # tag push, never on a branch push. `flavor: latest=false` turns off
-      # the default `latest=auto` rule (which would otherwise add `latest`
-      # on pushes to the default branch). The `enable=is_default_tag` value
-      # is a literal recognised by docker/metadata-action — NOT a Handlebars
-      # expression; do not wrap it in `{{...}}`.
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v5
@@ -65,25 +52,31 @@ jobs:
           tags: |
             type=ref,event=branch
             type=ref,event=pr
+
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
+
             type=sha,format=short
-            type=raw,value=latest,enable=is_default_tag
+
+            type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/v') }}
 
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
-          # Multi-arch pulls the full LibreOffice apt stack twice. Uncomment
-          # the line below to publish arm64 alongside amd64.
+
           platforms: linux/amd64
+
           push: ${{ github.event_name != 'pull_request' }}
+
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
+
           cache-from: type=gha,scope=${{ github.workflow }}
           cache-to: type=gha,mode=max,scope=${{ github.workflow }}
+
           provenance: mode=max
           sbom: true
