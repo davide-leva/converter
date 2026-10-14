@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#0a1b3d" />
+    <link rel="icon" href="/assets/avelspace-logo.png" />
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+    <title>Converti e carica · AvelSpace Docs</title>
+  </head>
+  <body data-page="convert">
+    <a class="skip-link" href="#main">Vai al contenuto</a>
+    <aside id="sidebar" class="sidebar"></aside>
+    <div class="app-shell">
+      <header id="topbar" class="topbar"></header>
+      <main id="main" class="main">
+        <div
+          id="notice"
+          class="notice"
+          role="status"
+          aria-live="polite"
+          hidden
+        ></div>
+        <div class="page-heading">
+          <div>
+            <span class="eyebrow">DA FILE A DOCUMENTO</span>
+            <h1>Converti e carica</h1>
+            <p>Un formato nuovo. La stessa attenzione ai tuoi documenti.</p>
+          </div>
+          <a class="secondary" href="/archivio"
+            ><span data-icon="arrow-left"></span>Torna all’archivio</a
+          >
+        </div>
+        <div class="workspace-grid">
+          <section class="work-card">
+            <div class="card-heading">
+              <span class="step-number">01</span>
+              <div>
+                <h2>Scegli il tuo documento</h2>
+                <p>Word, PowerPoint o un PDF già pronto.</p>
+              </div>
+            </div>
+            <form id="upload-form">
+              <label id="drop" class="drop-zone"
+                ><span class="drop-symbol" data-icon="upload"></span
+                ><strong>Trascina qui il tuo file</strong
+                ><span>oppure selezionalo dal dispositivo</span
+                ><input
+                  id="file"
+                  type="file"
+                  accept=".docx,.pptx,.pdf"
+                  required
+                  aria-label="Seleziona DOCX, PPTX o PDF"
+                /><span id="file-name" class="file-selected"
+                  >DOCX · PPTX · PDF</span
+                ></label
+              >
+              <div class="card-heading form-heading">
+                <span class="step-number">02</span>
+                <div>
+                  <h2>Dagli il posto giusto</h2>
+                  <p>Un nome chiaro, una cartella dedicata.</p>
+                </div>
+              </div>
+              <label
+                >Nome descrittivo<input
+                  id="upload-name"
+                  placeholder="Es. Proposta progetto · Ottobre 2026"
+                  maxlength="180" /></label
+              ><label
+                >Salva nella cartella<select id="upload-folder"></select></label
+              ><button id="convert" class="primary full-width">
+                <span data-icon="convert"></span>Converti e salva in PDF
+              </button>
+              <p class="field-note centered">
+                Il documento originale viene conservato nel tuo archivio.
+              </p>
+            </form>
+          </section>
+          <aside class="help-column">
+            <div class="help-card blue-help">
+              <span class="eyebrow">IL TUO FLUSSO, SEMPLIFICATO</span>
+              <h2>Dal documento<br />al risultato.</h2>
+              <ol class="guide-steps">
+                <li>
+                  <span>1</span>
+                  <div>
+                    <strong>Carica il file</strong>
+                    <p>
+                      DOCX e PPTX diventano PDF. I PDF si salvano direttamente.
+                    </p>
+                  </div>
+                </li>
+                <li>
+                  <span>2</span>
+                  <div>
+                    <strong>Scegli nome e cartella</strong>
+                    <p>
+                      Organizza subito il documento, anche in una sottocartella.
+                    </p>
+                  </div>
+                </li>
+                <li>
+                  <span>3</span>
+                  <div>
+                    <strong>Ritrovalo quando serve</strong>
+                    <p>Scarica il PDF e il suo originale dall’archivio.</p>
+                  </div>
+                </li>
+              </ol>
+            </div>
+            <div class="help-card">
+              <span class="help-icon" data-icon="shield"></span>
+              <h3>Uno spazio personale</h3>
+              <p>I tuoi documenti sono accessibili soltanto dal tuo account.</p>
+            </div>
+          </aside>
+        </div>
+        <section id="conversion-result" class="result-card" hidden></section>
+      </main>
+      <footer class="app-footer">
+        <span
+          >AvelSpace Docs <span class="footer-dot">·</span> Il tuo spazio,
+          organizzato.</span
+        ><span>SELF-HOST · YOUR SPACE</span>
+      </footer>
+    </div>
+    <dialog id="folder-dialog">
+      <form id="folder-form">
+        <div class="dialog-head">
+          <div>
+            <span class="eyebrow">ORGANIZZA IL TUO SPAZIO</span>
+            <h2 id="folder-dialog-title">Nuova cartella</h2>
+          </div>
+          <button
+            type="button"
+            class="icon-button dialog-close"
+            aria-label="Chiudi"
+          >
+            ×
+          </button>
+        </div>
+        <label
+          >Nome della cartella<input
+            id="folder-name"
+            placeholder="Es. Progetti, Contratti, Amministrazione"
+            maxlength="180"
+            required /></label
+        ><label>Posizione<select id="folder-parent"></select></label>
+        <p class="field-note">
+          Scegli un nome che ti aiuti a ritrovare i documenti.
+        </p>
+        <div class="dialog-actions">
+          <button type="button" class="secondary dialog-close">Annulla</button
+          ><button class="primary" id="folder-save">Crea cartella</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="document-dialog">
+      <form id="document-form">
+        <div class="dialog-head">
+          <h2>Organizza documento</h2>
+          <button
+            type="button"
+            class="icon-button dialog-close"
+            aria-label="Chiudi"
+          >
+            ×
+          </button>
+        </div>
+        <label
+          >Nome descrittivo<input
+            id="document-name"
+            maxlength="180"
+            required /></label
+        ><label>Cartella<select id="document-folder"></select></label>
+        <p class="field-note">
+          Il file originale resta conservato con il suo nome di caricamento.
+        </p>
+        <div class="dialog-actions">
+          <button type="button" class="secondary dialog-close">Annulla</button
+          ><button class="primary" id="document-save">Salva modifiche</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="delete-dialog">
+      <form id="delete-form">
+        <div class="dialog-head">
+          <h2>Elimina cartella vuota</h2>
+          <button
+            type="button"
+            class="icon-button dialog-close"
+            aria-label="Chiudi"
+          >
+            ×
+          </button>
+        </div>
+        <p id="delete-message"></p>
+        <p class="field-note">
+          Le cartelle con file o sottocartelle non possono essere eliminate.
+        </p>
+        <div class="dialog-actions">
+          <button type="button" class="secondary dialog-close">Annulla</button
+          ><button class="danger">Elimina cartella</button>
+        </div>
+      </form>
+    </dialog>
+  </body>
+</html>

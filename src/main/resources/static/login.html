@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#0a1b3d" />
+    <link rel="icon" href="/assets/avelspace-logo.png" />
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+    <title>Accedi · AvelSpace Docs</title>
+  </head>
+  <body data-page="login" class="login-page">
+    <main class="login-layout">
+      <section class="login-story">
+        <a class="login-brand" href="/accesso"
+          ><img
+            src="/assets/avelspace-logo.png"
+            alt=""
+            width="64"
+            height="64"
+          /><span
+            >Avel<span>Space</span
+            ><small>DOCS / YOUR DOCUMENT SPACE</small></span
+          ></a
+        >
+        <div class="login-story-copy">
+          <span class="pill">IL TUO SPAZIO. I TUOI DOCUMENTI.</span>
+          <h1>
+            Le idee prendono forma.<br /><span>I documenti trovano casa.</span>
+          </h1>
+          <p>
+            Converti, organizza e unisci.<br />Un workspace personale, dentro il
+            tuo ecosistema.
+          </p>
+          <div class="login-features">
+            <span><span data-icon="convert"></span>Conversione PDF</span
+            ><span><span data-icon="folder"></span>Archivio ordinato</span
+            ><span><span data-icon="merge"></span>Unione documenti</span>
+          </div>
+        </div>
+        <div class="login-bottom">
+          <span class="status-dot"></span>SELF-HOST · CONNECT · YOUR SPACE
+        </div>
+      </section>
+      <section class="login-form-section">
+        <div class="login-card">
+          <span class="eyebrow">BENVENUTO IN AVELSPACE DOCS</span>
+          <h2 id="login-title">Il tuo spazio ti aspetta.</h2>
+          <p id="login-description">Accedi per ritrovare i tuoi documenti.</p>
+          <div
+            id="notice"
+            class="notice"
+            role="status"
+            aria-live="polite"
+            hidden
+          ></div>
+          <form id="login-form">
+            <label
+              >Username<input
+                id="login-user"
+                autocomplete="username"
+                placeholder="Il tuo username"
+                required
+                maxlength="80"
+                minlength="3" /></label
+            ><label
+              >Password<input
+                id="login-password"
+                type="password"
+                autocomplete="current-password"
+                placeholder="La tua password"
+                required
+                maxlength="72" /></label
+            ><button id="submit-login" class="primary full-width">
+              Accedi al tuo spazio <span data-icon="arrow-right"></span></button
+            ><button
+              id="switch-mode"
+              class="text-button full-width"
+              type="button"
+              hidden
+            >
+              Crea un account
+            </button>
+          </form>
+          <a
+            id="oidc-login"
+            href="/oauth2/authorization/authentik"
+            class="primary full-width"
+            hidden
+            >Accedi con Authentik <span data-icon="arrow-right"></span
+          ></a>
+          <p class="login-privacy">
+            <span data-icon="shield"></span>Un archivio privato, associato al
+            tuo account.
+          </p>
+        </div>
+        <footer class="login-footer">
+          AvelSpace Docs <span>DOCUMENT WORKSPACE</span>
+        </footer>
+      </section>
+    </main>
+  </body>
+</html>

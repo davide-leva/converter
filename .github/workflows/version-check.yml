@@ -1,0 +1,37 @@
+name: version-check
+on:
+  push:
+    branches: ['**']
+    tags: ['**']
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  check:
+    if: github.event.deleted != true
+    name: Verify VERSION bumped with code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check committed versions
+        env:
+          EVENT: ${{ github.event_name }}
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          if [[ "$EVENT" == "pull_request" ]]; then
+            BASE=$(git merge-base "$PR_BASE" "$PR_HEAD")
+            bash scripts/check-version-bump.sh "$BASE..$PR_HEAD"
+          elif [[ -n "$BEFORE" && ! "$BEFORE" =~ ^0+$ ]]; then
+            if ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+              git fetch --no-tags origin "$BEFORE"
+            fi
+            bash scripts/check-version-bump.sh "$BEFORE..$AFTER"
+          else
+            bash scripts/check-version-bump.sh --new-ref "$AFTER" origin "refs/remotes/origin/$REF_NAME"
+          fi

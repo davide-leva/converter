@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#0a1b3d" />
+    <link rel="icon" href="/assets/avelspace-logo.png" />
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+    <title>Archivio · AvelSpace Docs</title>
+  </head>
+  <body data-page="archive">
+    <a class="skip-link" href="#main">Vai al contenuto</a>
+    <aside id="sidebar" class="sidebar"></aside>
+    <div class="app-shell">
+      <header id="topbar" class="topbar"></header>
+      <main id="main" class="main">
+        <div
+          id="notice"
+          class="notice"
+          role="status"
+          aria-live="polite"
+          hidden
+        ></div>
+        <div class="page-heading">
+          <div>
+            <span class="eyebrow">IL TUO SPAZIO DOCUMENTALE</span>
+            <h1 id="page-title">Il tuo archivio</h1>
+            <p id="page-description">
+              Tutti i tuoi documenti. Una casa per ogni progetto.
+            </p>
+          </div>
+          <div class="heading-actions">
+            <button class="secondary" id="new-folder">
+              <span data-icon="folder-plus"></span>Nuova cartella</button
+            ><a class="primary" id="new-file" href="/converti"
+              ><span data-icon="plus"></span>Carica file</a
+            >
+          </div>
+        </div>
+        <section class="overview" aria-label="Riepilogo archivio">
+          <div class="overview-copy">
+            <span class="pill">IL TUO ARCHIVIO, SEMPRE CON TE</span>
+            <h2>Più ordine.<br />Più spazio alle idee.</h2>
+            <p>
+              Converti, organizza e unisci i tuoi documenti. <br />Originali e
+              PDF restano al loro posto.
+            </p>
+            <a href="/unisci" class="overview-link"
+              >Crea un PDF da più documenti <span data-icon="arrow-right"></span
+            ></a>
+          </div>
+          <div class="overview-stats">
+            <div class="stat-card">
+              <span data-icon="files"></span><strong id="total-files">0</strong
+              ><span>Documenti salvati</span>
+            </div>
+            <div class="stat-card">
+              <span data-icon="folder"></span
+              ><strong id="total-folders">0</strong
+              ><span>Cartelle personali</span>
+            </div>
+            <div class="stat-card storage-stat">
+              <span data-icon="database"></span
+              ><strong id="total-storage">0 KB</strong
+              ><span>Documenti e PDF</span>
+            </div>
+          </div>
+        </section>
+        <div class="section-heading">
+          <nav id="breadcrumbs" aria-label="Percorso cartella"></nav>
+          <div class="section-tools">
+            <button class="text-button" id="edit-current-folder" hidden>
+              Modifica cartella</button
+            ><button
+              class="icon-button"
+              id="refresh"
+              aria-label="Aggiorna archivio"
+            >
+              <span data-icon="refresh"></span>
+            </button>
+          </div>
+        </div>
+        <section id="folder-section">
+          <div class="section-label">
+            <h2>Cartelle</h2>
+            <span id="folder-count" class="count-badge">0</span>
+          </div>
+          <div id="folder-grid" class="folder-grid"></div>
+        </section>
+        <section class="documents-section">
+          <div class="documents-toolbar">
+            <div class="section-label">
+              <h2>Documenti</h2>
+              <span id="count" class="count-badge">0</span>
+            </div>
+            <div class="document-filters">
+              <label class="search-box"
+                ><span data-icon="search"></span
+                ><input
+                  id="search"
+                  placeholder="Cerca un documento…"
+                  aria-label="Cerca documenti" /></label
+              ><select id="kind-filter" aria-label="Tipo documento">
+                <option value="">Tutti i tipi</option>
+                <option value="CONVERSION">Conversioni</option>
+                <option value="UPLOAD">PDF caricati</option>
+                <option value="MERGE">PDF uniti</option>
+              </select>
+            </div>
+          </div>
+          <div class="document-panel">
+            <div class="table-wrap">
+              <table id="history">
+                <thead>
+                  <tr>
+                    <th>DOCUMENTO</th>
+                    <th>ORIGINE</th>
+                    <th>ULTIMA ATTIVITÀ</th>
+                    <th class="right">AZIONI</th>
+                  </tr>
+                </thead>
+                <tbody id="rows"></tbody>
+              </table>
+            </div>
+            <div id="empty" class="empty-state" hidden>
+              <span class="empty-icon" data-icon="files"></span>
+              <h3>Il tuo prossimo documento parte da qui</h3>
+              <p>
+                Carica un file o crea una cartella per dare ordine al tuo
+                spazio.
+              </p>
+              <a class="secondary" id="empty-upload" href="/converti"
+                >Carica il primo file <span data-icon="arrow-right"></span
+              ></a>
+            </div>
+            <div class="table-footer">
+              <span id="visible-summary">Caricamento documenti…</span
+              ><span
+                ><span class="status-dot"></span>Originali sempre
+                conservati</span
+              >
+            </div>
+          </div>
+        </section>
+      </main>
+      <footer class="app-footer">
+        <span
+          >AvelSpace Docs <span class="footer-dot">·</span> Il tuo spazio,
+          organizzato.</span
+        ><span>SELF-HOST · YOUR SPACE</span>
+      </footer>
+    </div>
+    <dialog id="folder-dialog">
+      <form id="folder-form">
+        <div class="dialog-head">
+          <div>
+            <span class="eyebrow">ORGANIZZA IL TUO SPAZIO</span>
+            <h2 id="folder-dialog-title">Nuova cartella</h2>
+          </div>
+          <button
+            type="button"
+            class="icon-button dialog-close"
+            aria-label="Chiudi"
+          >
+            ×
+          </button>
+        </div>
+        <label
+          >Nome della cartella<input
+            id="folder-name"
+            placeholder="Es. Progetti, Contratti, Amministrazione"
+            maxlength="180"
+            required /></label
+        ><label>Posizione<select id="folder-parent"></select></label>
+        <p class="field-note">
+          Scegli un nome che ti aiuti a ritrovare i documenti.
+        </p>
+        <div class="dialog-actions">
+          <button type="button" class="secondary dialog-close">Annulla</button
+          ><button class="primary" id="folder-save">Crea cartella</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="document-dialog">
+      <form id="document-form">
+        <div class="dialog-head">
+          <h2>Organizza documento</h2>
+          <button
+            type="button"
+            class="icon-button dialog-close"
+            aria-label="Chiudi"
+          >
+            ×
+          </button>
+        </div>
+        <label
+          >Nome descrittivo<input
+            id="document-name"
+            maxlength="180"
+            required /></label
+        ><label>Cartella<select id="document-folder"></select></label>
+        <p class="field-note">
+          Il file originale resta conservato con il suo nome di caricamento.
+        </p>
+        <div class="dialog-actions">
+          <button type="button" class="secondary dialog-close">Annulla</button
+          ><button class="primary" id="document-save">Salva modifiche</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="delete-dialog">
+      <form id="delete-form">
+        <div class="dialog-head">
+          <h2>Elimina cartella vuota</h2>
+          <button
+            type="button"
+            class="icon-button dialog-close"
+            aria-label="Chiudi"
+          >
+            ×
+          </button>
+        </div>
+        <p id="delete-message"></p>
+        <p class="field-note">
+          Le cartelle con file o sottocartelle non possono essere eliminate.
+        </p>
+        <div class="dialog-actions">
+          <button type="button" class="secondary dialog-close">Annulla</button
+          ><button class="danger">Elimina cartella</button>
+        </div>
+      </form>
+    </dialog>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Check each pushed ref using its committed contents (not the working tree).
+set -euo pipefail
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+REMOTE="${1:-origin}"
+ANY_FAILED=0
+while read -r LOCAL_REF LOCAL_SHA REMOTE_REF REMOTE_SHA; do
+    [[ "${LOCAL_SHA}" =~ ^0+$ || "${LOCAL_SHA}" == "${REMOTE_SHA}" ]] && continue
+    if [[ "${REMOTE_SHA}" =~ ^0+$ ]]; then
+        if ! bash "${REPO_ROOT}/scripts/check-version-bump.sh" --new-ref "${LOCAL_SHA}" "${REMOTE}"; then
+            ANY_FAILED=1
+        fi
+    elif ! bash "${REPO_ROOT}/scripts/check-version-bump.sh" "${REMOTE_SHA}..${LOCAL_SHA}"; then
+        ANY_FAILED=1
+    fi
+done
+exit "${ANY_FAILED}"

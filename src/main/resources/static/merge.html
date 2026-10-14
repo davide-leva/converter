@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#0a1b3d" />
+    <link rel="icon" href="/assets/avelspace-logo.png" />
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+    <title>Unisci PDF · AvelSpace Docs</title>
+  </head>
+  <body data-page="merge">
+    <a class="skip-link" href="#main">Vai al contenuto</a>
+    <aside id="sidebar" class="sidebar"></aside>
+    <div class="app-shell">
+      <header id="topbar" class="topbar"></header>
+      <main id="main" class="main">
+        <div
+          id="notice"
+          class="notice"
+          role="status"
+          aria-live="polite"
+          hidden
+        ></div>
+        <div class="page-heading">
+          <div>
+            <span class="eyebrow">PIÙ DOCUMENTI, UN SOLO RISULTATO</span>
+            <h1>Unisci PDF</h1>
+            <p>
+              Combina file caricati e PDF del tuo archivio, nell’ordine che
+              scegli.
+            </p>
+          </div>
+          <a class="secondary" href="/archivio"
+            ><span data-icon="arrow-left"></span>Torna all’archivio</a
+          >
+        </div>
+        <div class="merge-layout">
+          <div class="merge-main">
+            <section class="work-card">
+              <div class="card-heading">
+                <span class="step-number">01</span>
+                <div>
+                  <h2>Aggiungi i tuoi PDF</h2>
+                  <p>Dal dispositivo, dall’archivio o da entrambi.</p>
+                </div>
+              </div>
+              <div class="source-actions">
+                <label class="source-upload" id="merge-drop"
+                  ><span class="source-icon" data-icon="upload"></span
+                  ><strong>Dal dispositivo</strong
+                  ><span>Trascina o scegli uno o più PDF</span
+                  ><input
+                    id="merge-files"
+                    type="file"
+                    multiple
+                    accept=".pdf"
+                    aria-label="Carica PDF da unire" /></label
+                ><button class="source-library" id="choose-stored">
+                  <span class="source-icon" data-icon="archive"></span
+                  ><strong>Dal tuo archivio</strong
+                  ><span>Scegli tra i PDF già disponibili</span
+                  ><span class="source-link"
+                    >Sfoglia documenti <span data-icon="arrow-right"></span
+                  ></span>
+                </button>
+              </div>
+            </section>
+            <section class="work-card queue-card">
+              <div class="card-heading">
+                <span class="step-number">02</span>
+                <div>
+                  <h2>
+                    Mettili nell’ordine giusto
+                    <span id="queue-count" class="count-badge">0</span>
+                  </h2>
+                  <p>Trascina i documenti o usa le frecce per riordinarli.</p>
+                </div>
+              </div>
+              <div id="queue-empty" class="queue-empty">
+                <span data-icon="merge"></span>
+                <h3>Ogni PDF ha il suo posto</h3>
+                <p>Aggiungi almeno due documenti per iniziare l’unione.</p>
+              </div>
+              <ol id="merge-queue" class="merge-queue"></ol>
+            </section>
+          </div>
+          <aside class="work-card merge-summary">
+            <span class="eyebrow">03 / IL TUO NUOVO DOCUMENTO</span>
+            <h2>Pronto a unirli?</h2>
+            <form id="merge-form">
+              <label
+                >Nome del PDF<input
+                  id="merge-name"
+                  value="Documento unito"
+                  required
+                  maxlength="180" /></label
+              ><label
+                >Cartella di destinazione<select id="merge-folder"></select
+              ></label>
+              <div class="merge-totals">
+                <div>
+                  <span>PDF selezionati</span
+                  ><strong id="merge-total">0</strong>
+                </div>
+                <div>
+                  <span>Dimensione sorgenti</span
+                  ><strong id="merge-size">0 KB</strong>
+                </div>
+              </div>
+              <button id="merge-submit" class="primary full-width" disabled>
+                <span data-icon="merge"></span>Unisci e salva PDF
+              </button>
+              <p class="field-note centered">
+                I documenti di partenza restano conservati. Il nuovo PDF compare
+                nel tuo archivio.
+              </p>
+            </form>
+            <div class="merge-hint">
+              <span data-icon="info"></span
+              ><span
+                >L’ordine della lista sarà l’ordine delle pagine nel PDF
+                finale.</span
+              >
+            </div>
+          </aside>
+        </div>
+        <section id="merge-result" class="result-card" hidden></section>
+        <dialog id="library-dialog" class="wide-dialog">
+          <div class="dialog-head">
+            <div>
+              <span class="eyebrow">PDF DISPONIBILI</span>
+              <h2>Scegli dal tuo archivio</h2>
+            </div>
+            <button class="icon-button dialog-close" aria-label="Chiudi">
+              ×
+            </button>
+          </div>
+          <label class="search-box"
+            ><span data-icon="search"></span
+            ><input
+              id="library-search"
+              placeholder="Cerca per nome…"
+              aria-label="Cerca PDF in archivio"
+          /></label>
+          <div id="library-list" class="library-list"></div>
+          <div class="dialog-actions">
+            <button class="secondary dialog-close">Annulla</button
+            ><button class="primary" id="add-stored">
+              Aggiungi selezionati
+            </button>
+          </div>
+        </dialog>
+      </main>
+      <footer class="app-footer">
+        <span
+          >AvelSpace Docs <span class="footer-dot">·</span> Il tuo spazio,
+          organizzato.</span
+        ><span>SELF-HOST · YOUR SPACE</span>
+      </footer>
+    </div>
+    <dialog id="folder-dialog">
+      <form id="folder-form">
+        <div class="dialog-head">
+          <div>
+            <span class="eyebrow">ORGANIZZA IL TUO SPAZIO</span>
+            <h2 id="folder-dialog-title">Nuova cartella</h2>
+          </div>
+          <button
+            type="button"
+            class="icon-button dialog-close"
+            aria-label="Chiudi"
+          >
+            ×
+          </button>
+        </div>
+        <label
+          >Nome della cartella<input
+            id="folder-name"
+            placeholder="Es. Progetti, Contratti, Amministrazione"
+            maxlength="180"
+            required /></label
+        ><label>Posizione<select id="folder-parent"></select></label>
+        <p class="field-note">
+          Scegli un nome che ti aiuti a ritrovare i documenti.
+        </p>
+        <div class="dialog-actions">
+          <button type="button" class="secondary dialog-close">Annulla</button
+          ><button class="primary" id="folder-save">Crea cartella</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="document-dialog">
+      <form id="document-form">
+        <div class="dialog-head">
+          <h2>Organizza documento</h2>
+          <button
+            type="button"
+            class="icon-button dialog-close"
+            aria-label="Chiudi"
+          >
+            ×
+          </button>
+        </div>
+        <label
+          >Nome descrittivo<input
+            id="document-name"
+            maxlength="180"
+            required /></label
+        ><label>Cartella<select id="document-folder"></select></label>
+        <p class="field-note">
+          Il file originale resta conservato con il suo nome di caricamento.
+        </p>
+        <div class="dialog-actions">
+          <button type="button" class="secondary dialog-close">Annulla</button
+          ><button class="primary" id="document-save">Salva modifiche</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="delete-dialog">
+      <form id="delete-form">
+        <div class="dialog-head">
+          <h2>Elimina cartella vuota</h2>
+          <button
+            type="button"
+            class="icon-button dialog-close"
+            aria-label="Chiudi"
+          >
+            ×
+          </button>
+        </div>
+        <p id="delete-message"></p>
+        <p class="field-note">
+          Le cartelle con file o sottocartelle non possono essere eliminate.
+        </p>
+        <div class="dialog-actions">
+          <button type="button" class="secondary dialog-close">Annulla</button
+          ><button class="danger">Elimina cartella</button>
+        </div>
+      </form>
+    </dialog>
+  </body>
+</html>

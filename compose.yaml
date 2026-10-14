@@ -1,0 +1,34 @@
+services:
+  converter:
+    build: .
+    image: forma-converter:local
+    ports:
+      - "${HTTP_PORT:-8080}:8080"
+    environment:
+      DATA_DIR: /data
+      PUBLIC_URL: ${PUBLIC_URL:-http://localhost:8080}
+      LOCAL_USERNAME: ${LOCAL_USERNAME:-admin}
+      LOCAL_PASSWORD: ${LOCAL_PASSWORD:-}
+      ALLOW_REGISTRATION: ${ALLOW_REGISTRATION:-true}
+      JWT_SECRET: ${JWT_SECRET:-}
+      JWT_HOURS: ${JWT_HOURS:-12}
+      OIDC_ISSUER_URI: ${OIDC_ISSUER_URI:-}
+      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-}
+      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET:-}
+      OIDC_SCOPES: ${OIDC_SCOPES:-openid,profile,email}
+      OIDC_AUTH_METHOD: ${OIDC_AUTH_METHOD:-client_secret_basic}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      MAX_FILE_SIZE: ${MAX_FILE_SIZE:-25MB}
+      MAX_REQUEST_SIZE: ${MAX_REQUEST_SIZE:-101MB}
+      CONVERSION_TIMEOUT_SECONDS: ${CONVERSION_TIMEOUT_SECONDS:-120}
+    volumes:
+      - ${DATA_VOLUME:-converter-data}:/data
+    restart: unless-stopped
+    init: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+volumes:
+  converter-data:
+    name: ${DATA_VOLUME_NAME:-converter-data}

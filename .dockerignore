@@ -1,0 +1,7 @@
+target
+data
+.env
+.git
+*.log
+node_modules
+__pycache__
